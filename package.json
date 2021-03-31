@@ -18,5 +18,8 @@
   "homepage": "https://github.com/Daerthox/nate#readme",
   "devDependencies": {
     "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "puppeteer": "^8.0.0"
   }
 }
