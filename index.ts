@@ -1,10 +1,12 @@
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer'
 
-(async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto('https://www.bbc.co.uk');
-  await page.screenshot({ path: 'bcc-news.png' });
+const takeScreenshot = async (url: string) => {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.goto(url)
+  await page.screenshot({ path: 'screenshot.png' })
 
-  await browser.close();
-})();
+  await browser.close()
+}
+
+takeScreenshot('https://www.bbc.co.uk')
