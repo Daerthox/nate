@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
     "lint": "eslint . --ext .ts",
-    "prettier-format": "prettier --config .prettierrc '*.ts' --write",
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "prepare": "husky install"
   },
   "repository": {
