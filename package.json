@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Daerthox/nate/issues"
   },
-  "homepage": "https://github.com/Daerthox/nate#readme"
+  "homepage": "https://github.com/Daerthox/nate#readme",
+  "devDependencies": {
+    "typescript": "^4.2.3"
+  }
 }
