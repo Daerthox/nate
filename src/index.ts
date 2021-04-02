@@ -23,8 +23,8 @@ const navigate = async (url: string) => {
   let content = await page.content()
 
   const [page2] = await Promise.all([
-      page.waitForNavigation(),
-      page.click(selector),
+    page.waitForNavigation(),
+    page.click(selector),
   ])
 
   let writer = createWriteStream(`${logsDir}/${Date.now()}.html`)
@@ -32,11 +32,16 @@ const navigate = async (url: string) => {
   writer.close()
 
   if (!page2 || !page2.ok()) {
-    throw new Error(`failed to navigate to next page from selector: ${selector}`)
+    throw new Error(
+      `failed to navigate to next page from selector: ${selector}`
+    )
   }
 
-  await page.waitForSelector('#content-section', { visible: true, timeout: 60000 })
-  
+  await page.waitForSelector('#content-section', {
+    visible: true,
+    timeout: 60000,
+  })
+
   selector = '.custom-select-trigger'
   await page.evaluate((selector) => {
     const elem = document.querySelector(selector)
@@ -89,7 +94,9 @@ const navigate = async (url: string) => {
   ])
 
   if (!page3 || !page3.ok()) {
-    throw new Error(`failed to navigate to next page from selector: ${selector}`)
+    throw new Error(
+      `failed to navigate to next page from selector: ${selector}`
+    )
   }
 
   try {
@@ -113,22 +120,24 @@ const navigate = async (url: string) => {
   }
 
   const nameInput = await page.waitForSelector('#name', { visible: true })
-  nameInput && await nameInput.type('nate', { delay: 300 })
+  nameInput && (await nameInput.type('nate', { delay: 300 }))
 
   const pwdInput = await page.waitForSelector('#pwd', { visible: true })
-  pwdInput && await pwdInput.type('07000000000', { delay: 300 })
+  pwdInput && (await pwdInput.type('07000000000', { delay: 300 }))
 
   const phoneInput = await page.waitForSelector('#phone', { visible: true })
-  phoneInput && await phoneInput.type('07000000000', { delay: 300 })
+  phoneInput && (await phoneInput.type('07000000000', { delay: 300 }))
 
   const emailInput = await page.waitForSelector('#email', { visible: true })
-  emailInput && await emailInput.type('nate@nate.tech', { delay: 300 })
+  emailInput && (await emailInput.type('nate@nate.tech', { delay: 300 }))
 
-  const genderCheckbox = await page.waitForSelector('input[type="checkbox"][value="female"]')
-  genderCheckbox && await genderCheckbox.click()
+  const genderCheckbox = await page.waitForSelector(
+    'input[type="checkbox"][value="female"]'
+  )
+  genderCheckbox && (await genderCheckbox.click())
 
   const submit = await page.waitForSelector('#btn', { visible: true })
-  
+
   if (!submit) {
     return null
   }
@@ -147,4 +156,6 @@ const navigate = async (url: string) => {
   writer.close()
 }
 
-navigate('https://nate-eu-west-1-prediction-test-webpages.s3-eu-west-1.amazonaws.com/tech-challenge/page1.html')
+navigate(
+  'https://nate-eu-west-1-prediction-test-webpages.s3-eu-west-1.amazonaws.com/tech-challenge/page1.html'
+)
