@@ -47,7 +47,12 @@ const navigate = async (url: string) => {
   writer.close()
 
   selector = '//span[contains(., "London")]'
-  await tagElementsWithContent(page, 'span', { 'nate-action-type': 'click' }, 'London')
+  await tagElementsWithContent(
+    page,
+    'span',
+    { 'nate-action-type': 'click' },
+    'London'
+  )
   const city = await page.waitForXPath(selector, { visible: true })
 
   if (!city) {
@@ -97,19 +102,31 @@ const navigate = async (url: string) => {
     console.log('maybe no popup')
   }
 
-  await tagElements(page, '#name', { 'nate-action-type': 'input', 'nate-dict-key': 'nate' })
+  await tagElements(page, '#name', {
+    'nate-action-type': 'input',
+    'nate-dict-key': 'nate',
+  })
   const nameInput = await page.waitForSelector('#name', { visible: true })
   nameInput && (await nameInput.type('nate', { delay: 300 }))
 
-  await tagElements(page, '#pwd', { 'nate-action-type': 'input', 'nate-dict-key': '07000000000' })
+  await tagElements(page, '#pwd', {
+    'nate-action-type': 'input',
+    'nate-dict-key': '07000000000',
+  })
   const pwdInput = await page.waitForSelector('#pwd', { visible: true })
   pwdInput && (await pwdInput.type('07000000000', { delay: 300 }))
 
-  await tagElements(page, '#phone', { 'nate-action-type': 'input', 'nate-dict-key': '07000000000' })
+  await tagElements(page, '#phone', {
+    'nate-action-type': 'input',
+    'nate-dict-key': '07000000000',
+  })
   const phoneInput = await page.waitForSelector('#phone', { visible: true })
   phoneInput && (await phoneInput.type('07000000000', { delay: 300 }))
 
-  await tagElements(page, '#email', { 'nate-action-type': 'input', 'nate-dict-key': 'nate@nate.tech' })
+  await tagElements(page, '#email', {
+    'nate-action-type': 'input',
+    'nate-dict-key': 'nate@nate.tech',
+  })
   const emailInput = await page.waitForSelector('#email', { visible: true })
   emailInput && (await emailInput.type('nate@nate.tech', { delay: 300 }))
 
