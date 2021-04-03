@@ -23,10 +23,10 @@ const createLogger: (page: Page, logDir: string) => Logger = (page, logDir) => {
       },
       logToFile: (filename: string, content: string) => {
         return new Promise<void>((resolve) => {
-            const writer = createWriteStream(`${logDir}/${filename}`)
-            writer.write(content)
-            writer.close()
-            resolve()
+          const writer = createWriteStream(`${logDir}/${filename}`)
+          writer.write(content)
+          writer.close()
+          resolve()
         })
       },
     }

@@ -6,25 +6,25 @@ interface Tags {
 }
 
 const tagElements = async (page: Page, selector: string, tags: Tags) => {
-    const handles = await page.$$(selector)
-    if (!handles.length) {
-        throw new Error(`could not locate any matching element: ${selector}`)
-    }
+  const handles = await page.$$(selector)
+  if (!handles.length) {
+    throw new Error(`could not locate any matching element: ${selector}`)
+  }
 
-    const addAttribute = (handle: Element, attribute: string, value: string) => {
-        handle.setAttribute(attribute, value)
-    }
+  const addAttribute = (handle: Element, attribute: string, value: string) => {
+    handle.setAttribute(attribute, value)
+  }
 
-    const ps: Promise<any>[] = []
-    handles.forEach((handle) => {
-        Object.entries(tags).forEach(([key, value]) => {
-            const p = page.evaluate(addAttribute, handle, key, value)
-            ps.push(p)
-        })
+  const ps: Promise<any>[] = []
+  handles.forEach((handle) => {
+    Object.entries(tags).forEach(([key, value]) => {
+      const p = page.evaluate(addAttribute, handle, key, value)
+      ps.push(p)
     })
+  })
 
-    await Promise.all(ps)
-    return handles
+  await Promise.all(ps)
+  return handles
 }
 
 const tagElementsWithContent = (
