@@ -3,12 +3,12 @@ import { createWriteStream, mkdirSync, existsSync } from 'fs'
 
 interface Logger {
   logPage: (filename: string) => Promise<void>
-  logToFile: (filename: string, content: string) => void
+  logToFile: (filename: string, content: string) => Promise<void>
 }
 
 let logger: Logger | undefined = undefined
 
-const createLogger = (page: Page, logDir: string) => {
+const createLogger: (page: Page, logDir: string) => Logger = (page, logDir) => {
   if (!existsSync(logDir)) {
     mkdirSync(logDir)
   }
@@ -22,9 +22,12 @@ const createLogger = (page: Page, logDir: string) => {
         writer.close()
       },
       logToFile: (filename: string, content: string) => {
-        const writer = createWriteStream(`${logDir}/${filename}`)
-        writer.write(content)
-        writer.close()
+        return new Promise<void>((resolve) => {
+            const writer = createWriteStream(`${logDir}/${filename}`)
+            writer.write(content)
+            writer.close()
+            resolve()
+        })
       },
     }
   }
