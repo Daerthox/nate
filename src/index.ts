@@ -6,7 +6,7 @@ const navigate = async (url: string) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.goto(url)
-  
+
   const logger = createLogger(page, 'logs')
 
   let selector = 'input[type="button"][value="Start"]'
