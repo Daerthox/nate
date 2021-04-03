@@ -9,9 +9,13 @@ const navigate = async (url: string) => {
 
   const logger = createLogger(page, 'logs')
 
-  const startButton = await tagElement(page, 'input[type="button"][value="start" i]', {
-    'nate-action-type': 'click',
-  })
+  const startButton = await tagElement(
+    page,
+    'input[type="button"][value="start" i]',
+    {
+      'nate-action-type': 'click',
+    }
+  )
 
   let content = await page.content()
 
@@ -69,9 +73,13 @@ const navigate = async (url: string) => {
 
   try {
     await page.waitForSelector('#popup', { visible: true, timeout: 10000 })
-    const closeButton = await tagElement(page, 'input[type="button"][value="x" i]', {
-      'nate-action-type': 'click',
-    })
+    const closeButton = await tagElement(
+      page,
+      'input[type="button"][value="x" i]',
+      {
+        'nate-action-type': 'click',
+      }
+    )
     content = await page.content()
     await closeButton.click()
     await logger.logToFile(`${Date.now()}-close-popup.html`, content)
@@ -108,9 +116,13 @@ const navigate = async (url: string) => {
   await emailInput.type('nate@nate.tech', { delay: 300 })
   await logger.logPage(`${Date.now()}-input-email.html`)
 
-  const genderCheckbox = await tagElement(page, 'input[type="checkbox"][value="female" i]', {
-    'nate-action-type': 'check',
-  })
+  const genderCheckbox = await tagElement(
+    page,
+    'input[type="checkbox"][value="female" i]',
+    {
+      'nate-action-type': 'check',
+    }
+  )
   await genderCheckbox.click()
   await logger.logPage(`${Date.now()}-check-gender.html`)
 

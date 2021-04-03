@@ -45,18 +45,22 @@ const tagElementWithContent = async (
   }
 
   for (const handle of handles) {
-   const hasContent = await page.evaluate(filterByContent, handle, content)
-   if (hasContent) {
-     elems.push(handle)
-   }
+    const hasContent = await page.evaluate(filterByContent, handle, content)
+    if (hasContent) {
+      elems.push(handle)
+    }
   }
 
   if (!elems.length) {
-    throw Error(`could not locate any matching element with content [${content}]: ${selector}`)
+    throw Error(
+      `could not locate any matching element with content [${content}]: ${selector}`
+    )
   }
 
   if (elems.length > 1) {
-    throw Error(`found more than one matching element with content [${content}]: ${selector}`)
+    throw Error(
+      `found more than one matching element with content [${content}]: ${selector}`
+    )
   }
 
   const element = elems[0]
