@@ -5,54 +5,74 @@ interface Tags {
   'nate-dict-key'?: string
 }
 
-const tagElements = async (page: Page, selector: string, tags: Tags) => {
+const tagElement = async (page: Page, selector: string, tags: Tags) => {
   const handles = await page.$$(selector)
   if (!handles.length) {
-    throw new Error(`could not locate any matching element: ${selector}`)
+    throw Error(`could not locate any matching element: ${selector}`)
   }
 
-  const addAttribute = (handle: Element, attribute: string, value: string) => {
-    handle.setAttribute(attribute, value)
+  if (handles.length > 1) {
+    throw Error(`found more than one matching element: ${selector}`)
+  }
+
+  const element = handles[0]
+
+  const addAttribute = (element: Element, attribute: string, value: string) => {
+    element.setAttribute(attribute, value)
   }
 
   const ps: Promise<any>[] = []
-  handles.forEach((handle) => {
-    Object.entries(tags).forEach(([key, value]) => {
-      const p = page.evaluate(addAttribute, handle, key, value)
-      ps.push(p)
-    })
+  Object.entries(tags).forEach(([key, value]) => {
+    const p = page.evaluate(addAttribute, element, key, value)
+    ps.push(p)
   })
 
   await Promise.all(ps)
-  return handles
+  return element
 }
 
-const tagElementsWithContent = (
+const tagElementWithContent = async (
   page: Page,
   selector: string,
   tags: Tags,
   content: string
 ) => {
-  return page.evaluate(
-    (selector, tags, content) => {
-      const elems = document.querySelectorAll(selector)
-      if (!elems.length) {
-        throw new Error(`could not locate any matching element: ${selector}`)
-      }
+  const handles = await page.$$(selector)
+  const elems = []
 
-      elems.forEach((elem) => {
-        if (elem.innerHTML !== content) {
-          return
-        }
-        Object.entries(tags).forEach(([key, value]) => {
-          elem.setAttribute(key, value)
-        })
-      })
-    },
-    selector,
-    tags as Record<string, string>,
-    content
-  )
+  const filterByContent = (handle: Element, content: string) => {
+    return handle.innerHTML === content
+  }
+
+  for (const handle of handles) {
+   const hasContent = await page.evaluate(filterByContent, handle, content)
+   if (hasContent) {
+     elems.push(handle)
+   }
+  }
+
+  if (!elems.length) {
+    throw Error(`could not locate any matching element with content [${content}]: ${selector}`)
+  }
+
+  if (elems.length > 1) {
+    throw Error(`found more than one matching element with content [${content}]: ${selector}`)
+  }
+
+  const element = elems[0]
+
+  const addAttribute = (element: Element, attribute: string, value: string) => {
+    element.setAttribute(attribute, value)
+  }
+
+  const ps: Promise<any>[] = []
+  Object.entries(tags).forEach(([key, value]) => {
+    const p = page.evaluate(addAttribute, element, key, value)
+    ps.push(p)
+  })
+
+  await Promise.all(ps)
+  return element
 }
 
-export { tagElements, tagElementsWithContent }
+export { tagElement, tagElementWithContent }
