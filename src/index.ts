@@ -69,22 +69,23 @@ const navigate = async (url: string) => {
     throw new Error(`failed to navigate to next page from next page button`)
   }
 
-  try {
-    await page.waitForSelector('#popup', { visible: true, timeout: 10000 })
-    const closeButton = await tagElement(
-      page,
-      'input[type="button"][value="x" i]',
-      {
-        'nate-action-type': 'click',
-      }
-    )
-    snapshot = await logger.pageSnapshot()
-    await closeButton.click()
-    await snapshot.logPage(`${Date.now()}-close-popup`)
-  } catch {
-    // probably no popup
-    console.log('maybe no popup')
-  }
+  const checkForPopup = setInterval(() => {
+    page
+      .waitForSelector('#popup', { visible: true, timeout: 300 })
+      .then(async () => {
+        const closeButton = await tagElement(
+          page,
+          'input[type="button"][value="x" i]',
+          {
+            'nate-action-type': 'click',
+          }
+        )
+        let snapshot = await logger.pageSnapshot()
+        await closeButton.click()
+        await snapshot.logPage(`${Date.now()}-close-popup`)
+        clearInterval(checkForPopup)
+      })
+  }, 500)
 
   const nameInput = await tagElement(page, '#name', {
     'nate-action-type': 'input',
@@ -141,6 +142,7 @@ const navigate = async (url: string) => {
 
   await logger.logPage(`${Date.now()}-complete`)
   await browser.close()
+  clearInterval(checkForPopup)
 }
 
 navigate(
