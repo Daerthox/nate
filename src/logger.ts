@@ -1,57 +1,98 @@
 import { Page } from 'puppeteer'
 import { createWriteStream, mkdirSync, existsSync } from 'fs'
 
-interface Logger {
+interface PageLogger {
   logPage: (filename: string) => Promise<void>
-  logCss: (filename: string) => Promise<void>
-  logToFile: (filename: string, content: string) => Promise<void>
+}
+
+interface Logger extends PageLogger {
+  pageSnapshot: () => Promise<PageLogger>
 }
 
 let logger: Logger | undefined = undefined
 
-const createLogger: (page: Page, logDir: string) => Logger = (page, logDir) => {
+const createLogger = (page: Page, logDir: string) => {
+  if (!!logger) {
+    return logger
+  }
+
   if (!existsSync(logDir)) {
     mkdirSync(logDir)
   }
 
-  if (!logger) {
-    logger = {
-      logPage: async (filename: string) => {
-        const content = await page.content()
-        const writer = createWriteStream(`${logDir}/${filename}`)
-        writer.write(content)
-        writer.close()
-      },
-      logCss: async (filename: string) => {
-        const sheetsLen = await page.evaluate(() => document.styleSheets.length)
-        for (let i = 0; i < sheetsLen; i++) {
-          const writer = createWriteStream(`${logDir}/${filename}-${i}.css`)
-          const css = await page.evaluate((i) => {
-            const sheet = document.styleSheets.item(i)
-            const cssRules = sheet!.cssRules
-            let content = ''
-            for (let j = 0; j < cssRules.length; j++) {
-              const rule = cssRules.item(j)
-              content += `${rule!.cssText}\n`
-            }
-            return content
-          }, i)
-          writer.write(css)
-          writer.close()
-        }
-      },
-      logToFile: (filename: string, content: string) => {
-        return new Promise<void>((resolve) => {
-          const writer = createWriteStream(`${logDir}/${filename}`)
-          writer.write(content)
-          writer.close()
-          resolve()
-        })
-      },
-    }
+  logger = {
+    logPage: (filename: string) => logPage(page, logDir, filename),
+    pageSnapshot: () => pageSnapshot(page, logDir),
   }
 
   return logger
+}
+
+const logPage = async (page: Page, logDir: string, filename: string) => {
+  const content = await page.content()
+  const sheets = await extractCss(page)
+  
+  const htmlWriter = createWriteStream(`${logDir}/${filename}.html`)
+  htmlWriter.write(content)
+  htmlWriter.close()
+
+  for (let i = 0; i < sheets.length; i++) {
+    const sheet = sheets[i]
+    const cssWriter = createWriteStream(`${logDir}/${filename}-${i}.css`)
+    cssWriter.write(sheet)
+    cssWriter.close()
+  }
+}
+
+const pageSnapshot = async (page: Page, logDir: string) => {
+  const content = await page.content()
+  const sheets = await extractCss(page)
+
+  return {
+    logPage: async (filename: string) => {
+      const htmlWriter = createWriteStream(`${logDir}/${filename}.html`)
+      htmlWriter.write(content)
+      htmlWriter.close()
+
+      for (let i = 0; i < sheets.length; i++) {
+        const sheet = sheets[i]
+        const cssWriter = createWriteStream(`${logDir}/${filename}-${i}.css`)
+        cssWriter.write(sheet)
+        cssWriter.close()
+      }
+    },
+  }
+}
+
+const extractCss = async (page: Page) => {
+  const sheets: string[] = []
+  const sheetsLen = await page.evaluate(() => document.styleSheets.length)
+  for (let i = 0; i < sheetsLen; i++) {
+    const css = await extractCssFromSheet(page, i)
+    sheets.push(css)
+  }
+
+  return sheets
+}
+
+const extractCssFromSheet = (page: Page, sheetIndex: number) => {
+  return page.evaluate((i) => {
+    const sheet = document.styleSheets.item(i)
+    let content = ''
+    try {
+      const cssRules = sheet!.cssRules
+      for (let j = 0; j < cssRules.length; j++) {
+        const rule = cssRules.item(j)
+        content += `${rule!.cssText}\n`
+      }
+    } 
+    catch(err) {
+      console.log('failed to read some css rules', err)
+      return '/* Failed to retrieve css rules */'
+    }
+
+    return content
+  }, sheetIndex)
 }
 
 export { createLogger }
