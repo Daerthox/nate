@@ -25,6 +25,7 @@ const navigate = async (url: string) => {
   ])
 
   logger.logToFile(`${Date.now()}-start.html`, content)
+  await logger.logCss(`${Date.now()}-start`)
 
   if (!page2 || !page2.ok()) {
     throw new Error(`failed to navigate to next page from start button`)
@@ -41,6 +42,7 @@ const navigate = async (url: string) => {
   select.click()
 
   await logger.logPage(`${Date.now()}-select-options.html`)
+  await logger.logCss(`${Date.now()}-select-options`)
 
   const city = await tagElementWithContent(
     page,
