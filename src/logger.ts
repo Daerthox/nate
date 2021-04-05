@@ -31,7 +31,7 @@ const createLogger = (page: Page, logDir: string) => {
 const logPage = async (page: Page, logDir: string, filename: string) => {
   const content = await page.content()
   const sheets = await extractCss(page)
-  
+
   const htmlWriter = createWriteStream(`${logDir}/${filename}.html`)
   htmlWriter.write(content)
   htmlWriter.close()
@@ -85,8 +85,7 @@ const extractCssFromSheet = (page: Page, sheetIndex: number) => {
         const rule = cssRules.item(j)
         content += `${rule!.cssText}\n`
       }
-    } 
-    catch(err) {
+    } catch (err) {
       console.log('failed to read some css rules', err)
       return '/* Failed to retrieve css rules */'
     }
