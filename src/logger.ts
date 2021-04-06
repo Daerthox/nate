@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer'
-import { createWriteStream, mkdirSync, existsSync } from 'fs'
+import { mkdir, appendFile } from 'fs/promises'
 
 interface PageLogger {
   logPage: (filename: string) => Promise<void>
@@ -11,14 +11,12 @@ interface Logger extends PageLogger {
 
 let logger: Logger | undefined = undefined
 
-const createLogger = (page: Page, logDir: string) => {
+const createLogger = async (page: Page, logDir: string) => {
   if (!!logger) {
     return logger
   }
 
-  if (!existsSync(logDir)) {
-    mkdirSync(logDir)
-  }
+  await mkdir(logDir, { recursive: true })
 
   logger = {
     logPage: (filename: string) => logPage(page, logDir, filename),
@@ -32,15 +30,11 @@ const logPage = async (page: Page, logDir: string, filename: string) => {
   const content = await page.content()
   const sheets = await extractCss(page)
 
-  const htmlWriter = createWriteStream(`${logDir}/${filename}.html`)
-  htmlWriter.write(content)
-  htmlWriter.close()
+  await appendFile(`${logDir}/${filename}.html`, content)
 
   for (let i = 0; i < sheets.length; i++) {
     const sheet = sheets[i]
-    const cssWriter = createWriteStream(`${logDir}/${filename}-${i}.css`)
-    cssWriter.write(sheet)
-    cssWriter.close()
+    await appendFile(`${logDir}/${filename}-${i}.css`, sheet)
   }
 }
 
@@ -50,15 +44,11 @@ const pageSnapshot = async (page: Page, logDir: string) => {
 
   return {
     logPage: async (filename: string) => {
-      const htmlWriter = createWriteStream(`${logDir}/${filename}.html`)
-      htmlWriter.write(content)
-      htmlWriter.close()
+      await appendFile(`${logDir}/${filename}.html`, content)
 
       for (let i = 0; i < sheets.length; i++) {
         const sheet = sheets[i]
-        const cssWriter = createWriteStream(`${logDir}/${filename}-${i}.css`)
-        cssWriter.write(sheet)
-        cssWriter.close()
+        await appendFile(`${logDir}/${filename}-${i}.css`, sheet)
       }
     },
   }

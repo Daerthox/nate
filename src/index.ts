@@ -6,14 +6,14 @@ import { createLogger } from './logger'
 const navigate = async (url: string) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
-  
+
   const page1 = await page.goto(url)
 
   if (!page1 || !page1.ok()) {
     throw Error(`failed to open url: [${url}]`)
   }
 
-  const logger = createLogger(page, 'logs')
+  const logger = await createLogger(page, 'logs')
 
   const startButton = await tagElement(
     page,
