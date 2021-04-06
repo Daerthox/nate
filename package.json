@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest test/**/*.ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
     "genenv": "ts-node scripts/genenv",
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Daerthox/nate#readme",
   "devDependencies": {
+    "@types/jest": "^26.0.22",
     "@types/node": "^14.14.37",
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@typescript-eslint/parser": "^4.20.0",
@@ -32,7 +33,9 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.3.1",
     "husky": "^6.0.0",
+    "jest": "^26.6.3",
     "prettier": "^2.2.1",
+    "ts-jest": "^26.5.4",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
   },
