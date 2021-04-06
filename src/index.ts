@@ -1,11 +1,16 @@
 import puppeteer from 'puppeteer'
+import config from './config'
 import { tagElement, tagElementWithContent } from './tagging'
 import { createLogger } from './logger'
 
 const navigate = async (url: string) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
-  await page.goto(url)
+  const page1 = await page.goto(url)
+
+  if (!page1 || !page1.ok()) {
+    throw Error(`failed to open url: [${url}]`)
+  }
 
   const logger = createLogger(page, 'logs')
 
@@ -45,7 +50,7 @@ const navigate = async (url: string) => {
     page,
     'span',
     { 'nate-action-type': 'select' },
-    'London'
+    config.city
   )
 
   await city.hover()
@@ -66,7 +71,7 @@ const navigate = async (url: string) => {
   await snapshot.logPage(`${Date.now()}-next-page`)
 
   if (!page3 || !page3.ok()) {
-    throw new Error(`failed to navigate to next page from next page button`)
+    throw Error(`failed to navigate to next page from next page button`)
   }
 
   const checkForPopup = setInterval(() => {
@@ -85,39 +90,42 @@ const navigate = async (url: string) => {
         await snapshot.logPage(`${Date.now()}-close-popup`)
         clearInterval(checkForPopup)
       })
+      .catch(() => {
+        /* Do nothing */
+      })
   }, 500)
 
   const nameInput = await tagElement(page, '#name', {
     'nate-action-type': 'input',
-    'nate-dict-key': 'nate',
+    'nate-dict-key': config.name,
   })
-  await nameInput.type('nate', { delay: 300 })
+  await nameInput.type(config.name, { delay: 300 })
   await logger.logPage(`${Date.now()}-input-name`)
 
   const pwdInput = await tagElement(page, '#pwd', {
     'nate-action-type': 'input',
-    'nate-dict-key': '07000000000',
+    'nate-dict-key': config.password,
   })
-  await pwdInput.type('07000000000', { delay: 300 })
+  await pwdInput.type(config.password, { delay: 300 })
   await logger.logPage(`${Date.now()}-input-password`)
 
   const phoneInput = await tagElement(page, '#phone', {
     'nate-action-type': 'input',
-    'nate-dict-key': '07000000000',
+    'nate-dict-key': config.phone,
   })
-  await phoneInput.type('07000000000', { delay: 300 })
+  await phoneInput.type(config.phone, { delay: 300 })
   await logger.logPage(`${Date.now()}-input-phone`)
 
   const emailInput = await tagElement(page, '#email', {
     'nate-action-type': 'input',
-    'nate-dict-key': 'nate@nate.tech',
+    'nate-dict-key': config.email,
   })
-  await emailInput.type('nate@nate.tech', { delay: 300 })
+  await emailInput.type(config.email, { delay: 300 })
   await logger.logPage(`${Date.now()}-input-email`)
 
   const genderCheckbox = await tagElement(
     page,
-    'input[type="checkbox"][value="female" i]',
+    `input[type="checkbox"][value="${config.gender}" i]`,
     {
       'nate-action-type': 'check',
     }
@@ -137,7 +145,7 @@ const navigate = async (url: string) => {
   await snapshot.logPage(`${Date.now()}-submit`)
 
   if (!page4 || !page4.ok()) {
-    return null
+    throw Error('failed to navigate to next page from submit button')
   }
 
   await logger.logPage(`${Date.now()}-complete`)
@@ -145,6 +153,4 @@ const navigate = async (url: string) => {
   clearInterval(checkForPopup)
 }
 
-navigate(
-  'https://nate-eu-west-1-prediction-test-webpages.s3-eu-west-1.amazonaws.com/tech-challenge/page1.html'
-)
+navigate(config.url)
