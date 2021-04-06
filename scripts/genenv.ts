@@ -10,33 +10,37 @@ const generateEnvironment = async () => {
     })
 
     const config = {
-        city: 'london',
-        name: 'nate',
-        phone: '07000000000',
-        password: '07000000000',
-        email: 'nate@nate.tech',
-        gender: 'female',
+        URL: 'https://nate-eu-west-1-prediction-test-webpages.s3-eu-west-1.amazonaws.com/tech-challenge/page1.html',
+        CITY: 'London',
+        NAME: 'nate',
+        PHONE: '07000000000',
+        PASSWORD: '07000000000',
+        EMAIL: 'nate@nate.tech',
+        GENDER: 'female',
     }
 
     const question = (str: string) => new Promise<string>(resolve => reader.question(str, resolve))
 
-    const name = await question(`name (default ${config.name}):`)
-    name ? config.name = name : noop()
+    const url = await question(`url (default ${config.URL}):`)
+    url ? config.URL = url : noop()
 
-    const city = await question(`city (default ${config.city}):`)
-    city ? config.city = city : noop()
-    
-    const phone = await question(`phone (default ${config.phone}):`)
-    phone ? config.password = phone : noop()
+    const name = await question(`name (default ${config.NAME}):`)
+    name ? config.NAME = name : noop()
 
-    const password = await question(`password (default ${config.password}):`)
-    password ? config.password = password : noop()
+    const city = await question(`city (default ${config.CITY}):`)
+    city ? config.CITY = city : noop()
     
-    const email = await question(`email (default ${config.email}):`)
-    email ? config.email = email : noop()
+    const phone = await question(`phone (default ${config.PHONE}):`)
+    phone ? config.PHONE = phone : noop()
+
+    const password = await question(`password (default ${config.PASSWORD}):`)
+    password ? config.PASSWORD = password : noop()
     
-    const gender = await question(`gender (default ${config.gender}):`)
-    gender ? config.gender = gender : noop()
+    const email = await question(`email (default ${config.EMAIL}):`)
+    email ? config.EMAIL = email : noop()
+    
+    const gender = await question(`gender (default ${config.GENDER}):`)
+    gender ? config.GENDER = gender : noop()
     
     reader.close()
     
