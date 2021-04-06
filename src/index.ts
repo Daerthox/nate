@@ -90,7 +90,9 @@ const navigate = async (url: string) => {
         await snapshot.logPage(`${Date.now()}-close-popup`)
         clearInterval(checkForPopup)
       })
-      .catch(() => { /* Do nothing */ })
+      .catch(() => {
+        /* Do nothing */
+      })
   }, 500)
 
   const nameInput = await tagElement(page, '#name', {

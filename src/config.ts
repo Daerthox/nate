@@ -9,12 +9,11 @@ if (envFound.error) {
 }
 
 export default {
-    url: process.env.URL || '',
-    city: process.env.CITY || '',
-    name: process.env.NAME || '',
-    phone: process.env.PHONE || '',
-    password: process.env.PASSWORD || '',
-    email: process.env.EMAIL || '',
-    gender: process.env.GENDER || ''
+  url: process.env.URL || '',
+  city: process.env.CITY || '',
+  name: process.env.NAME || '',
+  phone: process.env.PHONE || '',
+  password: process.env.PASSWORD || '',
+  email: process.env.EMAIL || '',
+  gender: process.env.GENDER || '',
 }
-    
