@@ -5,7 +5,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 const envFound = dotenv.config()
 if (envFound.error) {
-  console.log('could not find .env file')
+  console.log('could not find .env file') // eslint-disable-line no-console
 }
 
 export default {

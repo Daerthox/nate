@@ -17,8 +17,8 @@ const tagElement = async (page: Page, selector: string, tags: Tags) => {
 
   const element = handles[0]
 
-  const addAttribute = (element: Element, attribute: string, value: string) => {
-    element.setAttribute(attribute, value)
+  const addAttribute = (elem: Element, attribute: string, value: string) => {
+    elem.setAttribute(attribute, value)
   }
 
   const ps: Promise<any>[] = []
@@ -40,9 +40,7 @@ const tagElementWithContent = async (
   const handles = await page.$$(selector)
   const elems = []
 
-  const filterByContent = (handle: Element, content: string) => {
-    return handle.innerHTML === content
-  }
+  const filterByContent = (handle: Element, text: string) => (handle.innerHTML === text)
 
   for (const handle of handles) {
     const hasContent = await page.evaluate(filterByContent, handle, content)
@@ -65,8 +63,8 @@ const tagElementWithContent = async (
 
   const element = elems[0]
 
-  const addAttribute = (element: Element, attribute: string, value: string) => {
-    element.setAttribute(attribute, value)
+  const addAttribute = (elem: Element, attribute: string, value: string) => {
+    elem.setAttribute(attribute, value)
   }
 
   const ps: Promise<any>[] = []

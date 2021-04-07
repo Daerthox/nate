@@ -9,7 +9,7 @@
     "lint": "eslint . --ext .ts",
     "genenv": "ts-node scripts/genenv",
     "local": "ts-node src/index.ts",
-    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "prettier-format": "prettier --config .prettierrc '**/*.ts' --write",
     "prepare": "husky install"
   },
   "repository": {

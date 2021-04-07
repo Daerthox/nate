@@ -86,9 +86,9 @@ const navigate = async (url: string) => {
             'nate-action-type': 'click',
           }
         )
-        let snapshot = await logger.pageSnapshot()
+        const popupSnapshot = await logger.pageSnapshot()
         await closeButton.click()
-        await snapshot.logPage(`${Date.now()}-close-popup`)
+        await popupSnapshot.logPage(`${Date.now()}-close-popup`)
         clearInterval(checkForPopup)
       })
       .catch(() => {

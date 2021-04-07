@@ -10,9 +10,27 @@
       "plugin:@typescript-eslint/eslint-recommended",
       "plugin:@typescript-eslint/recommended",
       "airbnb-base",
+      "plugin:import/typescript",
       "prettier"
     ],
     "rules": {
-        "prettier/prettier": ["error", { "endOfLine": "auto" }]
+        "prettier/prettier": ["error", { "endOfLine": "auto" }],
+        "import/extensions": [
+          "error",
+          "ignorePackages",
+          {
+            "js": "never",
+            "jsx": "never",
+            "ts": "never",
+            "tsx": "never"
+          }
+       ],
+       "@typescript-eslint/no-unused-vars": "off",
+       "no-unused-vars": "off",
+       "@typescript-eslint/explicit-module-boundary-types": "off",
+       "import/prefer-default-export": "off",
+       "no-await-in-loop": "off",
+       "no-restricted-syntax": "off",
+       "no-undef": "warn"
     }
   }
