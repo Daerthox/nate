@@ -40,7 +40,8 @@ const tagElementWithContent = async (
   const handles = await page.$$(selector)
   const elems = []
 
-  const filterByContent = (handle: Element, text: string) => (handle.innerHTML === text)
+  const filterByContent = (handle: Element, text: string) =>
+    handle.innerHTML === text
 
   for (const handle of handles) {
     const hasContent = await page.evaluate(filterByContent, handle, content)

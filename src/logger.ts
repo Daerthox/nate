@@ -11,22 +11,23 @@ interface Logger extends PageLogger {
 
 let logger: Logger
 
-const extractCssFromSheet = (page: Page, sheetIndex: number) => page.evaluate((i) => {
-  const sheet = document.styleSheets.item(i) // eslint-disable-line no-undef
-  let content = ''
-  try {
-    const { cssRules} = sheet!
-    for (let j = 0; j < cssRules.length; j += 1) {
-      const rule = cssRules.item(j)
-      content += `${rule!.cssText}\n`
+const extractCssFromSheet = (page: Page, sheetIndex: number) =>
+  page.evaluate((i) => {
+    const sheet = document.styleSheets.item(i) // eslint-disable-line no-undef
+    let content = ''
+    try {
+      const { cssRules } = sheet!
+      for (let j = 0; j < cssRules.length; j += 1) {
+        const rule = cssRules.item(j)
+        content += `${rule!.cssText}\n`
+      }
+    } catch (err) {
+      console.log('failed to read some css rules', err) // eslint-disable-line no-console
+      return '/* Failed to retrieve css rules */'
     }
-  } catch (err) {
-    console.log('failed to read some css rules', err) // eslint-disable-line no-console
-    return '/* Failed to retrieve css rules */'
-  }
 
-  return content
-}, sheetIndex)
+    return content
+  }, sheetIndex)
 
 const extractCss = async (page: Page) => {
   const sheets: string[] = []
